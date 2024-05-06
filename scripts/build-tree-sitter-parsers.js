@@ -20,12 +20,15 @@ const parserMap = {
   python: [''],
 };
 
-const webTreeSitterWasm = path.join(path.dirname(require.resolve('web-tree-sitter/package.json')), 'tree-sitter.wasm');
+const webTreeSitterWasm = path.join(
+  path.dirname(require.resolve('web-tree-sitter/package.json')),
+  'tree-sitter.wasm'
+);
 
 cpSync(webTreeSitterWasm, path.join(outputDir, 'tree-sitter.wasm'));
 
 const parsers = Object.keys(pkgJson.devDependencies).filter(
-  (k) => k !== 'tree-sitter-cli' && k.startsWith(parserPkgNamePrefix),
+  k => k !== 'tree-sitter-cli' && k.startsWith(parserPkgNamePrefix)
 );
 
 for (const parser of parsers) {
@@ -41,13 +44,9 @@ for (const parser of parsers) {
     const grammerName = require(grammerJson).name;
     console.log(`build gramme:`, grammerName);
     const wasmName = `tree-sitter-${grammerName}.wasm`;
-    // npm install -g tree-sitter-cli
-    // next line cmd need tree-sitter>=0.22.2
-    // const cmd = `tree-sitter build --wasm --output ${outputDir}/${wasmName} ${dir}`;
 
-    // npm install -g tree-sitter-cli@0.20.8
-    // need tree-sitter===0.20.8, because of https://github.com/tree-sitter/tree-sitter/issues/3233
-    const cmd = `tree-sitter build-wasm ${dir}`;
+    const cmd = `tree-sitter build --wasm --output ${outputDir}/${wasmName} ${dir}`;
+
     commandSync(cmd);
     commandSync(`mv ${wasmName} ${outputDir}/${wasmName}`);
   }

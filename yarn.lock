@@ -227,10 +227,10 @@ combined-stream@^1.0.8:
   dependencies:
     delayed-stream "~1.0.0"
 
-commit-and-tag-version@^12.2.0:
-  version "12.2.0"
-  resolved "https://registry.npmjs.org/commit-and-tag-version/-/commit-and-tag-version-12.2.0.tgz#08f3796e86f168397db2d9a987e3c7cf005dbb76"
-  integrity sha512-t8kvDy8dVTCF/j2u7Elt/J3tzCPyh16ssK8ECpj44R6jJiCUJMhWwZ36L652iChvqz4BAem9XU7WyuMYHlmSvA==
+commit-and-tag-version@^12.4.1:
+  version "12.4.1"
+  resolved "https://registry.npmjs.org/commit-and-tag-version/-/commit-and-tag-version-12.4.1.tgz#0414f745434839b2c76d4ad5a190269b7ad63957"
+  integrity sha512-+NAbDJ2KiXDvV45S8r6o1DWbeEXijxb+Vxp9dsogISuSeRZ5JOPiaQsHoDKhZ58FuBtmp6ITe/hpeFu2gT82xA==
   dependencies:
     chalk "^2.4.2"
     conventional-changelog "3.1.25"
@@ -246,6 +246,7 @@ commit-and-tag-version@^12.2.0:
     jsdom "^23.2.0"
     semver "^7.5.4"
     w3c-xmlserializer "^5.0.0"
+    yaml "^2.4.1"
     yargs "^17.7.2"
 
 compare-func@^2.0.0:
@@ -1088,7 +1089,7 @@ ms@2.1.2:
   resolved "https://registry.npmjs.org/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
 
-nan@^2.14.0, nan@^2.14.1, nan@^2.17.0, nan@^2.18.0:
+nan@^2.18.0:
   version "2.19.0"
   resolved "https://registry.npmjs.org/nan/-/nan-2.19.0.tgz#bb58122ad55a6c5bc973303908d5b16cfdd5a8c0"
   integrity sha512-nO1xXxfh/RWNxfd/XPfbIfFk5vgLsAxUR9y5O0cHMJu/AW9U95JLXqthYHjEp+8gQ5p96K9jUp8nbVOxCdRbtw==
@@ -1115,10 +1116,20 @@ node-addon-api@^7.1.0:
   resolved "https://registry.npmjs.org/node-addon-api/-/node-addon-api-7.1.0.tgz#71f609369379c08e251c558527a107107b5e0fdb"
   integrity sha512-mNcltoe1R8o7STTegSOHdnJNN7s5EUvhoS7ShnTHDyOSd+8H+UdWODq6qSv67PjC8Zc5JRT8+oLAMCr0SIXw7g==
 
+node-addon-api@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.npmjs.org/node-addon-api/-/node-addon-api-8.0.0.tgz#5453b7ad59dd040d12e0f1a97a6fa1c765c5c9d2"
+  integrity sha512-ipO7rsHEBqa9STO5C5T10fj732ml+5kLN1cAG8/jdHd56ldQeGj3Q7+scUS+VHK/qy1zLEwC4wMK5+yM0btPvw==
+
 node-gyp-build@^4.8.0:
   version "4.8.0"
   resolved "https://registry.npmjs.org/node-gyp-build/-/node-gyp-build-4.8.0.tgz#3fee9c1731df4581a3f9ead74664369ff00d26dd"
   integrity sha512-u6fs2AEUljNho3EYTJNBfImO5QTo/J/1Etd+NVdCj7qWKUSN/bSLkZwhDv7I+w/MSC6qJ4cknepkAYykDdK8og==
+
+node-gyp-build@^4.8.1:
+  version "4.8.1"
+  resolved "https://registry.npmjs.org/node-gyp-build/-/node-gyp-build-4.8.1.tgz#976d3ad905e71b76086f4f0b0d3637fe79b6cda5"
+  integrity sha512-OSs33Z9yWr148JZcbZd5WiAXhh/n9z8TxQcdMhIOlpN9AhWpLfvVFO73+m77bBABQMaY9XSvIa+qk0jlI7Gcaw==
 
 normalize-package-data@^2.3.2, normalize-package-data@^2.5.0:
   version "2.5.0"
@@ -1659,28 +1670,31 @@ tr46@^5.0.0:
   dependencies:
     punycode "^2.3.1"
 
-tree-sitter-go@^0.20.0:
-  version "0.20.0"
-  resolved "https://registry.npmjs.org/tree-sitter-go/-/tree-sitter-go-0.20.0.tgz#3f5b52307ea75c0ce72ac701350a432ee5916f38"
-  integrity sha512-5OBBND9ykffXZnaKrVpk8RnSaZJ26Si8yCfJKPSkEypWrywqCmZOZ74NveqMY0ogmHK2X8mFFuIL5jUnxOKyYw==
+tree-sitter-go@0.21.0:
+  version "0.21.0"
+  resolved "https://registry.npmjs.org/tree-sitter-go/-/tree-sitter-go-0.21.0.tgz#4ac06436e920165358c023c91407378ec496ef7f"
+  integrity sha512-i8Y7GVNg/F4GNCVkQBqbCt9fLGiXaMXjZkDoDWrm/pNOpVxLb+QX0ue8E2RlXoG8otHz5LruDBz5qou5iNjdBw==
   dependencies:
-    nan "^2.14.0"
+    node-addon-api "^8.0.0"
+    node-gyp-build "^4.8.0"
 
-tree-sitter-java@^0.20.2:
-  version "0.20.2"
-  resolved "https://registry.npmjs.org/tree-sitter-java/-/tree-sitter-java-0.20.2.tgz#7ce478fd93d86f975632ee09fc666c09944a3350"
-  integrity sha512-jc6RCnM+JE2ns1AkpErOp2Dp1jOADPbljsrWup0Vj2qTmG8KGYMSTD7HcrVRyZUC6pRLFySPMOh8x7Dn12aynw==
+tree-sitter-java@0.21.0:
+  version "0.21.0"
+  resolved "https://registry.npmjs.org/tree-sitter-java/-/tree-sitter-java-0.21.0.tgz#4af75c83375c86fd403e8ab626c77834c240af24"
+  integrity sha512-CKJiTo1uc3SUsgEcaZgufGx8my6dzihy8JR/JsJH40Tj3uSe2/eFLk+0q+fpbosGAyY4YiXJtEoFB2O4bS2yOw==
   dependencies:
-    nan "^2.14.1"
+    node-addon-api "^8.0.0"
+    node-gyp-build "^4.8.0"
 
-tree-sitter-javascript@^0.20.4:
-  version "0.20.4"
-  resolved "https://registry.npmjs.org/tree-sitter-javascript/-/tree-sitter-javascript-0.20.4.tgz#f81351ae5a39d94456f4bf3b600cf1620bb0fa64"
-  integrity sha512-7IUgGkZQROI7MmX2ErKhE3YP4+rM2qwBy5JeukE7fJQMEYP9nHpxvuQpa+eOX+hE1im2pWVc1yDCfVKKCBtxww==
+tree-sitter-javascript@0.21.2:
+  version "0.21.2"
+  resolved "https://registry.npmjs.org/tree-sitter-javascript/-/tree-sitter-javascript-0.21.2.tgz#c5f6e7ca05ea336ce652eda544ad884e8db38995"
+  integrity sha512-048eZTByvBaYo9cKM1dixlRqJjFug0ukt8+H07+JGxrlqCzzR8BpOieYHWHRwqvnt3TTzLLWWuT5kn5UwJ55wg==
   dependencies:
-    nan "^2.18.0"
+    node-addon-api "^8.0.0"
+    node-gyp-build "^4.8.1"
 
-tree-sitter-python@^0.21.0:
+tree-sitter-python@0.21.0:
   version "0.21.0"
   resolved "https://registry.npmjs.org/tree-sitter-python/-/tree-sitter-python-0.21.0.tgz#ed45d24a8b8783ccb20eaa5f98070604e494e6de"
   integrity sha512-IUKx7JcTVbByUx1iHGFS/QsIjx7pqwTMHL9bl/NGyhyyydbfNrpruo2C7W6V4KZrbkkCOlX8QVrCoGOFW5qecg==
@@ -1688,14 +1702,15 @@ tree-sitter-python@^0.21.0:
     node-addon-api "^7.1.0"
     node-gyp-build "^4.8.0"
 
-tree-sitter-rust@^0.20.4:
-  version "0.20.4"
-  resolved "https://registry.npmjs.org/tree-sitter-rust/-/tree-sitter-rust-0.20.4.tgz#b953d08ce726dd3928af7e0ec1cca50ff381329a"
-  integrity sha512-pgqPgw/vmx3LGjsfOXHJ+YrIx/Xg0NYVPbUWwlonoQMHD0Jxd1i/Fgq6N0ANOu9Wmb188MN9dVRLHPotF+IW5g==
+tree-sitter-rust@0.21.0:
+  version "0.21.0"
+  resolved "https://registry.npmjs.org/tree-sitter-rust/-/tree-sitter-rust-0.21.0.tgz#f61f753c2ff6ad5dc9592ee3db3a01a62c0e0a7d"
+  integrity sha512-unVr73YLn3VC4Qa/GF0Nk+Wom6UtI526p5kz9Rn2iZSqwIFedyCZ3e0fKCEmUJLIPGrTb/cIEdu3ZUNGzfZx7A==
   dependencies:
-    nan "^2.17.0"
+    node-addon-api "^7.1.0"
+    node-gyp-build "^4.8.0"
 
-tree-sitter-typescript@^0.20.5:
+tree-sitter-typescript@0.20.5:
   version "0.20.5"
   resolved "https://registry.npmjs.org/tree-sitter-typescript/-/tree-sitter-typescript-0.20.5.tgz#29e30c052bcb06cb992ffd2d392e010b0e1768b3"
   integrity sha512-RzK/Pc6k4GiXvInIBlo8ZggekP6rODfW2P6KHFCTSUHENsw6ynh+iacFhfkJRa4MT8EIN2WHygFJ7076/+eHKg==
@@ -1781,10 +1796,10 @@ w3c-xmlserializer@^5.0.0:
   dependencies:
     xml-name-validator "^5.0.0"
 
-web-tree-sitter@^0.22.2:
-  version "0.22.2"
-  resolved "https://registry.npmjs.org/web-tree-sitter/-/web-tree-sitter-0.22.2.tgz#44036b26ae95b83f5ef1950ddeffb581eb4370c5"
-  integrity sha512-gY/aw1wNQbTU0m7U5PojDOftsKMbBIpusJ9Ia/y7sfIN4jk9xXLHwQs+eQ3QP772IdjxVqje0hRTCh5CzrWeGg==
+web-tree-sitter@0.22.6:
+  version "0.22.6"
+  resolved "https://registry.npmjs.org/web-tree-sitter/-/web-tree-sitter-0.22.6.tgz#0f47fa798a5cbe0c2293b813f51c3ddebf94abbe"
+  integrity sha512-hS87TH71Zd6mGAmYCvlgxeGDjqd9GTeqXNqTT+u0Gs51uIozNIaaq/kUAbV/Zf56jb2ZOyG8BxZs2GG9wbLi6Q==
 
 webidl-conversions@^7.0.0:
   version "7.0.0"
@@ -1859,6 +1874,11 @@ yallist@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npmjs.org/yallist/-/yallist-4.0.0.tgz#9bb92790d9c0effec63be73519e11a35019a3a72"
   integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
+
+yaml@^2.4.1:
+  version "2.4.2"
+  resolved "https://registry.npmjs.org/yaml/-/yaml-2.4.2.tgz#7a2b30f2243a5fc299e1f14ca58d475ed4bc5362"
+  integrity sha512-B3VqDZ+JAg1nZpaEmWtTXUlBneoGx6CPM9b0TENK6aoSu5t73dItudwdgmi6tHlIZZId4dZ9skcAQ2UbcyAeVA==
 
 yargs-parser@^20.2.2, yargs-parser@^20.2.3:
   version "20.2.9"

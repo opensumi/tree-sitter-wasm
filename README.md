@@ -15,6 +15,7 @@ npm install -g tree-sitter-cli
 and run `build-wasm` script:
 
 ```sh
+yarn
 yarn build-wasm
 ```
 
