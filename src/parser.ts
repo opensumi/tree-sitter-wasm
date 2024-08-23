@@ -13,7 +13,7 @@ import { IDisposable, IRange, ITextModel } from './types';
 export const DEFAULT_MIN_BLOCK_COUNT = 20;
 
 export class LanguageParser implements IDisposable {
-  private parser: Parser;
+  private parser?: Parser;
 
   private parserLoaded = new PromiseWithResolvers<void>();
 
@@ -32,7 +32,7 @@ export class LanguageParser implements IDisposable {
     return this.parserLoaded.promise;
   }
 
-  public getParser(): Parser {
+  public getParser(): Parser | undefined {
     return this.parser;
   }
 
@@ -94,6 +94,10 @@ export class LanguageParser implements IDisposable {
   }
 
   async parseAST(model: ITextModel) {
+    if (!this.parser) {
+      return;
+    }
+
     const key = `${model.id}@${model.getVersionId()}`;
     const cachedNode = this.lruCache.get(key);
     if (cachedNode) {
@@ -130,6 +134,9 @@ export class LanguageParser implements IDisposable {
     range: IRange,
   ): Promise<IOtherBlockInfo | null> {
     await this.parserLoaded.promise;
+    if (!this.parser) {
+      return null;
+    }
     const tree = this.parser.parse(sourceCode);
     if (tree) {
       const rootNode = tree.rootNode;
@@ -434,7 +441,9 @@ export class LanguageParser implements IDisposable {
   }
 
   dispose() {
-    this.parser.delete();
+    if (this.parser) {
+      this.parser.delete();
+    }
     this.lruCache.clear();
   }
 }

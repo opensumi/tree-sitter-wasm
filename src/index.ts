@@ -1,5 +1,9 @@
 import { LanguageParser } from './parser';
-import { SupportedTreeSitterLanguages, parserNameMap } from './language-facts';
+import {
+  SupportedTreeSitterLanguages,
+  SupportedLanguages,
+  parserNameMap,
+} from './language-facts';
 import { WasmModuleLoader } from './wasm-loader';
 import { IDisposable } from './types';
 
@@ -12,7 +16,7 @@ export class LanguageParserService implements IDisposable {
   }
 
   createParser(language: string) {
-    const treeSitterLang = parserNameMap[language];
+    const treeSitterLang = parserNameMap[language as SupportedLanguages];
     if (treeSitterLang) {
       if (!this.pool.has(treeSitterLang)) {
         this.pool.set(
@@ -26,7 +30,7 @@ export class LanguageParserService implements IDisposable {
   }
 
   removeParser(language: string) {
-    const treeSitterLang = parserNameMap[language];
+    const treeSitterLang = parserNameMap[language as SupportedLanguages];
     if (treeSitterLang) {
       const parser = this.pool.get(treeSitterLang);
       if (parser) {
