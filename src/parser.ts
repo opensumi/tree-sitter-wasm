@@ -198,8 +198,14 @@ export class LanguageParser implements IDisposable {
 
     const nodes = rootNode.descendantsOfType(Array.from(types));
     return nodes.map((node) => {
+      const category = this.languageFacts.isFunctionCodeBlock(
+        this.language,
+        node.type,
+      )
+        ? 'function'
+        : 'other';
       return {
-        infoCategory: 'other',
+        infoCategory: category,
         range: toMonacoRange(node),
         type: node.type,
       };
