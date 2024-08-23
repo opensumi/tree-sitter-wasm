@@ -13,7 +13,7 @@ import { IDisposable, IRange, ITextModel } from './types';
 export const DEFAULT_MIN_BLOCK_COUNT = 20;
 
 export class LanguageParser implements IDisposable {
-  private parser: Parser;
+  private parser?: Parser;
 
   private parserLoaded = new PromiseWithResolvers<void>();
 
@@ -32,19 +32,20 @@ export class LanguageParser implements IDisposable {
     return this.parserLoaded.promise;
   }
 
-  public getParser(): Parser {
+  public getParser(): Parser | undefined {
     return this.parser;
   }
 
   private async initializeParser() {
-    this.parser = await this.wasmModuleManager.loadParser();
-    // Load grammar
-    const grammar = await this.wasmModuleManager.loadLanguage(this.language);
-    const languageParser = await Parser.Language.load(new Uint8Array(grammar));
-    // Set language
-    this.parser.setLanguage(languageParser);
+    try {
+      this.parser = await this.wasmModuleManager.loadParser();
+      const language = await this.wasmModuleManager.loadLanguage(this.language);
+      this.parser.setLanguage(language);
 
-    this.parserLoaded.resolve();
+      this.parserLoaded.resolve();
+    } catch (error) {
+      this.parserLoaded.reject(error);
+    }
   }
 
   /**
@@ -94,13 +95,17 @@ export class LanguageParser implements IDisposable {
   }
 
   async parseAST(model: ITextModel) {
+    await this.parserLoaded.promise;
+    if (!this.parser) {
+      return;
+    }
+
     const key = `${model.id}@${model.getVersionId()}`;
     const cachedNode = this.lruCache.get(key);
     if (cachedNode) {
       return cachedNode;
     }
 
-    await this.parserLoaded.promise;
     const sourceCode = model.getValue();
     const tree = this.parser.parse(sourceCode);
     if (tree) {
@@ -125,11 +130,14 @@ export class LanguageParser implements IDisposable {
   /**
    * 从给定的位置开始，找到最近的没有语法错误的代码块
    */
-  async findCodeBlockWithSyntaxError(
+  async findNoSyntaxErrorCodeBlock(
     sourceCode: string,
     range: IRange,
   ): Promise<IOtherBlockInfo | null> {
     await this.parserLoaded.promise;
+    if (!this.parser) {
+      return null;
+    }
     const tree = this.parser.parse(sourceCode);
     if (tree) {
       const rootNode = tree.rootNode;
@@ -175,6 +183,33 @@ export class LanguageParser implements IDisposable {
       };
     }
     return null;
+  }
+
+  async provideAllCodeBlockInfo(model: ITextModel) {
+    const rootNode = await this.parseAST(model);
+    if (!rootNode) {
+      return [];
+    }
+
+    const types = this.languageFacts.getCodeBlockTypes(this.language);
+    if (!types || types.size === 0) {
+      return [];
+    }
+
+    const nodes = rootNode.descendantsOfType(Array.from(types));
+    return nodes.map((node) => {
+      const category = this.languageFacts.isFunctionCodeBlock(
+        this.language,
+        node.type,
+      )
+        ? 'function'
+        : 'other';
+      return {
+        infoCategory: category,
+        range: toMonacoRange(node),
+        type: node.type,
+      };
+    });
   }
 
   async provideCodeBlockInfo(
@@ -434,7 +469,9 @@ export class LanguageParser implements IDisposable {
   }
 
   dispose() {
-    this.parser.delete();
+    if (this.parser) {
+      this.parser.delete();
+    }
     this.lruCache.clear();
   }
 }
