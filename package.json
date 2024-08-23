@@ -11,14 +11,16 @@
   ],
   "scripts": {
     "build-wasm": "node scripts/build-tree-sitter-parsers.js",
-    "build": "tsc",
+    "build": "rm -rf ./lib && tsc",
+    "watch": "rm -rf ./lib && tsc -w",
     "release": "commit-and-tag-version"
   },
   "dependencies": {
-    "web-tree-sitter": "0.22.6",
-    "tslib": "^2.2.0"
+    "tslib": "^2.2.0",
+    "web-tree-sitter": "0.22.6"
   },
   "devDependencies": {
+    "@types/node": "^22.5.0",
     "commit-and-tag-version": "^12.4.1",
     "tree-sitter-go": "0.21.0",
     "tree-sitter-java": "0.21.0",

@@ -11,12 +11,15 @@ export class LanguageParserService implements IDisposable {
   private pool = new Map<SupportedTreeSitterLanguages, LanguageParser>();
   wasmLoader: WasmModuleLoader;
 
+  /**
+   * @param baseUrl The base URL to load the wasm files from(file scheme is also supported for Node.js)
+   */
   constructor(baseUrl: string) {
     this.wasmLoader = new WasmModuleLoader(baseUrl);
   }
 
-  createParser(language: string) {
-    const treeSitterLang = parserNameMap[language as SupportedLanguages];
+  createParser(languageId: string | SupportedLanguages) {
+    const treeSitterLang = parserNameMap[languageId as SupportedLanguages];
     if (treeSitterLang) {
       if (!this.pool.has(treeSitterLang)) {
         this.pool.set(
@@ -29,8 +32,8 @@ export class LanguageParserService implements IDisposable {
     }
   }
 
-  removeParser(language: string) {
-    const treeSitterLang = parserNameMap[language as SupportedLanguages];
+  removeParser(languageId: string | SupportedLanguages) {
+    const treeSitterLang = parserNameMap[languageId as SupportedLanguages];
     if (treeSitterLang) {
       const parser = this.pool.get(treeSitterLang);
       if (parser) {

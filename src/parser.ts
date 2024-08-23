@@ -37,14 +37,15 @@ export class LanguageParser implements IDisposable {
   }
 
   private async initializeParser() {
-    this.parser = await this.wasmModuleManager.loadParser();
-    // Load grammar
-    const grammar = await this.wasmModuleManager.loadLanguage(this.language);
-    const languageParser = await Parser.Language.load(new Uint8Array(grammar));
-    // Set language
-    this.parser.setLanguage(languageParser);
+    try {
+      this.parser = await this.wasmModuleManager.loadParser();
+      const language = await this.wasmModuleManager.loadLanguage(this.language);
+      this.parser.setLanguage(language);
 
-    this.parserLoaded.resolve();
+      this.parserLoaded.resolve();
+    } catch (error) {
+      this.parserLoaded.reject(error);
+    }
   }
 
   /**
@@ -94,6 +95,7 @@ export class LanguageParser implements IDisposable {
   }
 
   async parseAST(model: ITextModel) {
+    await this.parserLoaded.promise;
     if (!this.parser) {
       return;
     }
@@ -104,7 +106,6 @@ export class LanguageParser implements IDisposable {
       return cachedNode;
     }
 
-    await this.parserLoaded.promise;
     const sourceCode = model.getValue();
     const tree = this.parser.parse(sourceCode);
     if (tree) {
@@ -129,7 +130,7 @@ export class LanguageParser implements IDisposable {
   /**
    * 从给定的位置开始，找到最近的没有语法错误的代码块
    */
-  async findCodeBlockWithSyntaxError(
+  async findNoSyntaxErrorCodeBlock(
     sourceCode: string,
     range: IRange,
   ): Promise<IOtherBlockInfo | null> {
@@ -182,6 +183,27 @@ export class LanguageParser implements IDisposable {
       };
     }
     return null;
+  }
+
+  async provideAllCodeBlockInfo(model: ITextModel) {
+    const rootNode = await this.parseAST(model);
+    if (!rootNode) {
+      return [];
+    }
+
+    const types = this.languageFacts.getCodeBlockTypes(this.language);
+    if (!types || types.size === 0) {
+      return [];
+    }
+
+    const nodes = rootNode.descendantsOfType(Array.from(types));
+    return nodes.map((node) => {
+      return {
+        infoCategory: 'other',
+        range: toMonacoRange(node),
+        type: node.type,
+      };
+    });
   }
 
   async provideCodeBlockInfo(
