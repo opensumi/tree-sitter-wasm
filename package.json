@@ -1,6 +1,6 @@
 {
   "name": "@opensumi/tree-sitter-wasm",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "repository": "git@github.com:opensumi/tree-sitter-wasm.git",
