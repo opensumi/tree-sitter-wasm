@@ -52,10 +52,6 @@ export class TreeSitterLanguageFacts {
     });
   }
 
-  getLanguageOrEmpty(language: SupportedTreeSitterLanguages) {
-    return this.langs.get(language);
-  }
-
   isCodeBlock(language: SupportedTreeSitterLanguages, type: string): boolean {
     const languageFacts = this.langs.get(language);
     if (languageFacts && languageFacts.provideCodeBlocks) {
