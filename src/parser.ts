@@ -17,9 +17,9 @@ export class LanguageParser implements IDisposable {
 
   private parserLoaded = new PromiseWithResolvers<void>();
 
-  private lruCache = new LRUCache<string, Parser.SyntaxNode>(500);
+  private lruCache = new LRUCache<string, Parser.SyntaxNode>(60);
 
-  private languageFacts = new TreeSitterLanguageFacts();
+  private languageFacts = TreeSitterLanguageFacts.instance();
 
   constructor(
     private language: SupportedTreeSitterLanguages,
@@ -185,18 +185,29 @@ export class LanguageParser implements IDisposable {
     return null;
   }
 
-  async provideAllCodeBlockInfo(model: ITextModel) {
+  protected async provideAllCodeBlockInfoBy(
+    model: ITextModel,
+    infoSet: Set<string>,
+  ) {
     const rootNode = await this.parseAST(model);
     if (!rootNode) {
       return [];
     }
 
+    if (!infoSet || infoSet.size === 0) {
+      return [];
+    }
+
+    const nodes = rootNode.descendantsOfType(Array.from(infoSet));
+    return nodes;
+  }
+
+  async provideAllCodeBlockInfo(model: ITextModel) {
     const types = this.languageFacts.getCodeBlockTypes(this.language);
     if (!types || types.size === 0) {
       return [];
     }
-
-    const nodes = rootNode.descendantsOfType(Array.from(types));
+    const nodes = await this.provideAllCodeBlockInfoBy(model, types);
     return nodes.map((node) => {
       const category = this.languageFacts.isFunctionCodeBlock(
         this.language,
@@ -210,6 +221,20 @@ export class LanguageParser implements IDisposable {
         type: node.type,
       };
     });
+  }
+
+  async provideAllFunctionCodeBlockInfo(model: ITextModel) {
+    const types = this.languageFacts.getFunctionCodeBlockTypes(this.language);
+    if (!types || types.size === 0) {
+      return [];
+    }
+    const nodes = await this.provideAllCodeBlockInfoBy(model, types);
+
+    return nodes
+      .map((node) => {
+        return this.languageFacts.provideFunctionInfo(this.language, node);
+      })
+      .filter(Boolean);
   }
 
   async provideCodeBlockInfo(

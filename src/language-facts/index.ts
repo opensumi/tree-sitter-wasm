@@ -36,7 +36,16 @@ export class TreeSitterLanguageFacts {
     SupportedTreeSitterLanguages,
     AbstractLanguageFacts
   >();
-  constructor() {
+
+  private static _instance: TreeSitterLanguageFacts;
+  static instance() {
+    if (!this._instance) {
+      this._instance = new TreeSitterLanguageFacts();
+    }
+    return this._instance;
+  }
+
+  private constructor() {
     knownLanguageFacts.forEach((Fact) => {
       const fact = new Fact();
       this.langs.set(fact.name, fact);
@@ -45,8 +54,9 @@ export class TreeSitterLanguageFacts {
 
   isCodeBlock(language: SupportedTreeSitterLanguages, type: string): boolean {
     const languageFacts = this.langs.get(language);
-    if (languageFacts && languageFacts.isCodeBlock) {
-      return languageFacts.isCodeBlock(type);
+    if (languageFacts && languageFacts.provideCodeBlocks) {
+      const infoSet = languageFacts.provideCodeBlocks();
+      return infoSet.has(type);
     }
     return false;
   }
@@ -56,8 +66,9 @@ export class TreeSitterLanguageFacts {
     type: string,
   ): boolean {
     const languageFacts = this.langs.get(language);
-    if (languageFacts && languageFacts.isFunctionCodeBlocks) {
-      return languageFacts.isFunctionCodeBlocks(type);
+    if (languageFacts && languageFacts.provideFunctionCodeBlocks) {
+      const infoSet = languageFacts.provideFunctionCodeBlocks();
+      return infoSet.has(type);
     }
     return false;
   }
@@ -77,6 +88,16 @@ export class TreeSitterLanguageFacts {
     const languageFacts = this.langs.get(language);
     if (languageFacts) {
       return languageFacts.provideCodeBlocks();
+    }
+    return emptySet;
+  }
+
+  getFunctionCodeBlockTypes(
+    language: SupportedTreeSitterLanguages,
+  ): Set<string> {
+    const languageFacts = this.langs.get(language);
+    if (languageFacts && languageFacts.provideFunctionCodeBlocks) {
+      return languageFacts.provideFunctionCodeBlocks();
     }
     return emptySet;
   }
