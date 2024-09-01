@@ -15,14 +15,6 @@ export class PromiseWithResolvers<T> {
   resolve!: (value: T | PromiseLike<T>) => void;
   reject!: (err?: any) => void;
 
-  toString = () => {
-    console.log(this.resolve, this.reject);
-  };
-
-  isPending() {
-    return Object.toString.call(this.promise) === '[object Promise]';
-  }
-
   promise = new Promise<T>((resolve, reject) => {
     this.resolve = resolve;
     this.reject = reject;
