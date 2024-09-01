@@ -35,7 +35,7 @@ async function main() {
   );
   const parser = await service.createParser('javascript');
   const textModel = createTestTextModel(code.toString(), 'javascript');
-  const info = await parser.provideAllCodeBlockInfo(textModel);
+  const info = await parser.provideAllFunctionCodeBlockInfo(textModel);
   console.log(`🚀 ~ main ~ info:`, info);
 }
 

@@ -50,13 +50,8 @@ export class JavaScriptLanguageFacts implements AbstractLanguageFacts {
   provideCodeBlocks(): Set<string> {
     return blockSet;
   }
-
-  isCodeBlock(type: string): boolean {
-    return blockSet.has(type);
-  }
-
-  isFunctionCodeBlocks(type: string): boolean {
-    return functionBlockSet.has(type);
+  provideFunctionCodeBlocks(): Set<string> {
+    return functionBlockSet;
   }
 
   provideFunctionInfo(node: SyntaxNode): IFunctionBlockInfo | null {

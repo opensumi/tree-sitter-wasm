@@ -27,8 +27,4 @@ export class JavaScriptReactLanguageFacts implements AbstractLanguageFacts {
   provideCodeBlocks(): Set<string> {
     return blockSet;
   }
-
-  isCodeBlock(type: string): boolean {
-    return blockSet.has(type);
-  }
 }

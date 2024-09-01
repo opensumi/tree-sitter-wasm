@@ -30,6 +30,8 @@ export class LanguageParserService implements IDisposable {
 
       return this.pool.get(treeSitterLang);
     }
+
+    throw new Error(`Unsupported language: ${languageId}`);
   }
 
   removeParser(languageId: string | SupportedLanguages) {

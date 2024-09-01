@@ -211,6 +211,32 @@ export class LanguageParser implements IDisposable {
       };
     });
   }
+  async provideAllFunctionCodeBlockInfo(model: ITextModel) {
+    const rootNode = await this.parseAST(model);
+    if (!rootNode) {
+      return [];
+    }
+
+    const types = this.languageFacts.getFunctionCodeBlockTypes(this.language);
+    if (!types || types.size === 0) {
+      return [];
+    }
+
+    const nodes = rootNode.descendantsOfType(Array.from(types));
+    return nodes.map((node) => {
+      const category = this.languageFacts.isFunctionCodeBlock(
+        this.language,
+        node.type,
+      )
+        ? 'function'
+        : 'other';
+      return {
+        infoCategory: category,
+        range: toMonacoRange(node),
+        type: node.type,
+      };
+    });
+  }
 
   async provideCodeBlockInfo(
     model: ITextModel,
