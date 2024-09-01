@@ -10,9 +10,12 @@ export class WasmModuleLoader {
 
   private parserInitialized = false;
 
+  /**
+   * 每次需要创建新的 Parser 实例
+   */
   async loadParser() {
-    const wasmPath = `${this.baseUrl}/tree-sitter.wasm`;
     if (!this.parserInitialized) {
+      const wasmPath = `${this.baseUrl}/tree-sitter.wasm`;
       await Parser.init({
         locateFile: () => wasmPath,
       });

@@ -185,18 +185,20 @@ export class LanguageParser implements IDisposable {
     return null;
   }
 
-  async provideAllCodeBlockInfo(model: ITextModel) {
+  protected async provideAllCodeBlockInfoBy(
+    model: ITextModel,
+    infoSet: Set<string>,
+  ) {
     const rootNode = await this.parseAST(model);
     if (!rootNode) {
       return [];
     }
 
-    const types = this.languageFacts.getCodeBlockTypes(this.language);
-    if (!types || types.size === 0) {
+    if (!infoSet || infoSet.size === 0) {
       return [];
     }
 
-    const nodes = rootNode.descendantsOfType(Array.from(types));
+    const nodes = rootNode.descendantsOfType(Array.from(infoSet));
     return nodes.map((node) => {
       const category = this.languageFacts.isFunctionCodeBlock(
         this.language,
@@ -211,31 +213,21 @@ export class LanguageParser implements IDisposable {
       };
     });
   }
-  async provideAllFunctionCodeBlockInfo(model: ITextModel) {
-    const rootNode = await this.parseAST(model);
-    if (!rootNode) {
+
+  async provideAllCodeBlockInfo(model: ITextModel) {
+    const types = this.languageFacts.getCodeBlockTypes(this.language);
+    if (!types || types.size === 0) {
       return [];
     }
+    return this.provideAllCodeBlockInfoBy(model, types);
+  }
 
+  async provideAllFunctionCodeBlockInfo(model: ITextModel) {
     const types = this.languageFacts.getFunctionCodeBlockTypes(this.language);
     if (!types || types.size === 0) {
       return [];
     }
-
-    const nodes = rootNode.descendantsOfType(Array.from(types));
-    return nodes.map((node) => {
-      const category = this.languageFacts.isFunctionCodeBlock(
-        this.language,
-        node.type,
-      )
-        ? 'function'
-        : 'other';
-      return {
-        infoCategory: category,
-        range: toMonacoRange(node),
-        type: node.type,
-      };
-    });
+    return this.provideAllCodeBlockInfoBy(model, types);
   }
 
   async provideCodeBlockInfo(
