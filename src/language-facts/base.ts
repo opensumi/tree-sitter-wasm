@@ -43,3 +43,24 @@ export abstract class AbstractLanguageFacts {
 
 export type AbstractLanguageFactsDerived = (new () => AbstractLanguageFacts) &
   typeof AbstractLanguageFacts;
+
+export class EmptyLanguageFacts extends AbstractLanguageFacts {
+  emptySet = new Set<string>();
+
+  name = '' as any;
+  listCommentStyle: string = '' as any;
+  blockCommentStyle = {
+    start: '',
+    end: '',
+    linePrefix: '',
+  };
+  provideFunctionInfo(node: Parser.SyntaxNode): IFunctionBlockInfo | null {
+    return null;
+  }
+  provideCodeBlocks(): Set<string> {
+    return this.emptySet;
+  }
+  provideFunctionCodeBlocks(): Set<string> {
+    return this.emptySet;
+  }
+}

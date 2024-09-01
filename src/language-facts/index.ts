@@ -36,11 +36,24 @@ export class TreeSitterLanguageFacts {
     SupportedTreeSitterLanguages,
     AbstractLanguageFacts
   >();
-  constructor() {
+
+  private static _instance: TreeSitterLanguageFacts;
+  static instance() {
+    if (!this._instance) {
+      this._instance = new TreeSitterLanguageFacts();
+    }
+    return this._instance;
+  }
+
+  private constructor() {
     knownLanguageFacts.forEach((Fact) => {
       const fact = new Fact();
       this.langs.set(fact.name, fact);
     });
+  }
+
+  getLanguageOrEmpty(language: SupportedTreeSitterLanguages) {
+    return this.langs.get(language);
   }
 
   isCodeBlock(language: SupportedTreeSitterLanguages, type: string): boolean {
