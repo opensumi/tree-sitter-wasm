@@ -10,6 +10,7 @@
     "*.wasm"
   ],
   "scripts": {
+    "prepublishOnly": "npm run build",
     "build-wasm": "node scripts/build-tree-sitter-parsers.js",
     "build": "rm -rf ./lib && tsc",
     "watch": "rm -rf ./lib && tsc -w",
