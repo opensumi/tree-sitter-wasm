@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.1.0](https://github.com/opensumi/tree-sitter-wasm/compare/v1.0.0...v1.1.0) (2024-09-02)
+
+
+### Features
+
+* support provide function info ([#4](https://github.com/opensumi/tree-sitter-wasm/issues/4)) ([ca47062](https://github.com/opensumi/tree-sitter-wasm/commit/ca470620d0fe9a2c78a7b449b1f155e989b2c738))
+
 ## [1.0.0](https://github.com/opensumi/tree-sitter-wasm/compare/v0.0.2...v1.0.0) (2024-09-01)
 
 
