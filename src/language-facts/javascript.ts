@@ -35,7 +35,7 @@ export const functionBlockCodeTypes = [
   'method_definition',
 ];
 
-const functionBlockSet = new Set(functionBlockCodeTypes);
+export const functionBlockSet = new Set(functionBlockCodeTypes);
 const blockSet = new Set(javascriptBlockCodeTypes);
 
 export function provideFunctionInfo(

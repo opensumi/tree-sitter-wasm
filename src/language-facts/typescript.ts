@@ -1,6 +1,6 @@
 import { SyntaxNode } from 'web-tree-sitter';
 import { AbstractLanguageFacts, IFunctionBlockInfo } from './base';
-import { provideFunctionInfo } from './javascript';
+import { functionBlockSet, provideFunctionInfo } from './javascript';
 
 /**
  * typescript 中表示代码块的节点类型
@@ -46,6 +46,10 @@ export class TypeScriptLanguageFacts implements AbstractLanguageFacts {
 
   provideCodeBlocks(): Set<string> {
     return blockSet;
+  }
+
+  provideFunctionCodeBlocks(): Set<string> {
+    return functionBlockSet;
   }
 
   provideFunctionInfo(node: SyntaxNode): IFunctionBlockInfo | null {
