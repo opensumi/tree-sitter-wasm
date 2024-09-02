@@ -43,19 +43,21 @@ export function provideFunctionInfo(
 ): IFunctionBlockInfo | null {
   switch (node.type) {
     case 'function_declaration':
-    case 'function_expression':
+    case 'function_expression': {
+      const name = node.childForFieldName('name')?.text || '';
       return {
         infoCategory: 'function',
         type: node.type,
-        name: node.firstNamedChild?.text || '',
+        name,
         signatures: node.children
           .filter((child) => child.type === 'parameter')
           .map((param) => param.firstChild?.text || ''),
         range: toMonacoRange(node),
       };
+    }
+    // case: const a = () => {}
     case 'arrow_function': {
       const parent = node.parent;
-      // example: const a = () => {}
       if (
         parent &&
         parent.type === 'variable_declarator' &&
@@ -76,16 +78,18 @@ export function provideFunctionInfo(
       }
       return null;
     }
-    case 'method_definition':
+    case 'method_definition': {
+      const name = node.childForFieldName('name')?.text || '';
       return {
         infoCategory: 'function',
         type: node.type,
-        name: node.firstNamedChild?.text || '',
+        name,
         signatures: node.children
           .filter((child) => child.type === 'parameter')
           .map((param) => param.firstChild?.text || ''),
         range: toMonacoRange(node),
       };
+    }
   }
 
   return null;
