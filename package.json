@@ -28,6 +28,7 @@
     "tree-sitter-python": "0.21.0",
     "tree-sitter-rust": "0.21.0",
     "tree-sitter-typescript": "0.20.5",
+    "tsx": "^4.19.0",
     "typescript": "^5.5.4"
   },
   "publishConfig": {
