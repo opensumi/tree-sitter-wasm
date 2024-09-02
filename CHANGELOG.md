@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.1.2](https://github.com/opensumi/tree-sitter-wasm/compare/v1.1.1...v1.1.2) (2024-09-02)
+
+
+### Bug Fixes
+
+* ts function codeblock not work ([#5](https://github.com/opensumi/tree-sitter-wasm/issues/5)) ([3382914](https://github.com/opensumi/tree-sitter-wasm/commit/3382914978d2d1be71756bca1fc9a7973e0429d0))
+
 ## [1.1.1](https://github.com/opensumi/tree-sitter-wasm/compare/v1.1.0...v1.1.1) (2024-09-02)
 
 
