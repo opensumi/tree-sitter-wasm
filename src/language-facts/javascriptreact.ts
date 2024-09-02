@@ -1,5 +1,6 @@
-import { AbstractLanguageFacts } from './base';
-import { javascriptBlockCodeTypes } from './javascript';
+import { SyntaxNode } from 'web-tree-sitter';
+import { AbstractLanguageFacts, IFunctionBlockInfo } from './base';
+import { javascriptBlockCodeTypes, provideFunctionInfo } from './javascript';
 
 /**
  * jsx 中表示代码块的节点类型
@@ -26,5 +27,9 @@ export class JavaScriptReactLanguageFacts implements AbstractLanguageFacts {
 
   provideCodeBlocks(): Set<string> {
     return blockSet;
+  }
+
+  provideFunctionInfo(node: SyntaxNode): IFunctionBlockInfo | null {
+    return provideFunctionInfo(node);
   }
 }

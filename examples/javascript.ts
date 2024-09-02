@@ -1,18 +1,6 @@
-const { LanguageParserService } = require('../lib');
-const path = require('path');
-
-function createTestTextModel(text, language) {
-  console.log(`🚀 ~ createTestTextModel ~ text:`, text);
-  return {
-    getValue() {
-      return text;
-    },
-    getVersionId() {
-      return 1;
-    },
-    id: '1',
-  };
-}
+import { LanguageParserService } from '../src';
+import { createTestTextModel } from './utils';
+import path from 'path';
 
 function code() {
   const a = 1;
@@ -39,7 +27,7 @@ async function main() {
     // url.pathToFileURL(basePath).toString(),
     basePath,
   );
-  const parser = await service.createParser('javascript');
+  const parser = await service.createParser('javascript')!;
   const textModel = createTestTextModel(code.toString(), 'javascript');
   const info = await parser.provideAllFunctionCodeBlockInfo(textModel);
   console.log(`🚀 ~ main ~ info:`, info);
