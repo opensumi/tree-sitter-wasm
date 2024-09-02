@@ -38,6 +38,59 @@ export const functionBlockCodeTypes = [
 const functionBlockSet = new Set(functionBlockCodeTypes);
 const blockSet = new Set(javascriptBlockCodeTypes);
 
+export function provideFunctionInfo(
+  node: SyntaxNode,
+): IFunctionBlockInfo | null {
+  switch (node.type) {
+    case 'function_declaration':
+    case 'function_expression':
+      return {
+        infoCategory: 'function',
+        type: node.type,
+        name: node.firstNamedChild?.text || '',
+        signatures: node.children
+          .filter((child) => child.type === 'parameter')
+          .map((param) => param.firstChild?.text || ''),
+        range: toMonacoRange(node),
+      };
+    case 'arrow_function': {
+      const parent = node.parent;
+      // example: const a = () => {}
+      if (
+        parent &&
+        parent.type === 'variable_declarator' &&
+        parent.parent &&
+        (parent.parent.type === 'lexical_declaration' ||
+          parent.parent.type === 'export_statement' ||
+          parent.parent.type === 'variable_declaration')
+      ) {
+        return {
+          infoCategory: 'function',
+          type: node.type,
+          name: parent.firstChild?.text || '',
+          signatures: node.children
+            .filter((child) => child.type === 'parameter')
+            .map((param) => param.firstChild?.text || ''),
+          range: toMonacoRange(parent.parent),
+        };
+      }
+      return null;
+    }
+    case 'method_definition':
+      return {
+        infoCategory: 'function',
+        type: node.type,
+        name: node.firstNamedChild?.text || '',
+        signatures: node.children
+          .filter((child) => child.type === 'parameter')
+          .map((param) => param.firstChild?.text || ''),
+        range: toMonacoRange(node),
+      };
+  }
+
+  return null;
+}
+
 export class JavaScriptLanguageFacts implements AbstractLanguageFacts {
   name = 'javascript' as const;
   listCommentStyle = '// ';
@@ -53,55 +106,7 @@ export class JavaScriptLanguageFacts implements AbstractLanguageFacts {
   provideFunctionCodeBlocks(): Set<string> {
     return functionBlockSet;
   }
-
   provideFunctionInfo(node: SyntaxNode): IFunctionBlockInfo | null {
-    switch (node.type) {
-      case 'function_declaration':
-      case 'function_expression':
-        return {
-          infoCategory: 'function',
-          type: node.type,
-          name: node.firstNamedChild?.text || '',
-          signatures: node.children
-            .filter((child) => child.type === 'parameter')
-            .map((param) => param.firstChild?.text || ''),
-          range: toMonacoRange(node),
-        };
-      case 'arrow_function': {
-        const parent = node.parent;
-        // example: const a = () => {}
-        if (
-          parent &&
-          parent.type === 'variable_declarator' &&
-          parent.parent &&
-          (parent.parent.type === 'lexical_declaration' ||
-            parent.parent.type === 'export_statement' ||
-            parent.parent.type === 'variable_declaration')
-        ) {
-          return {
-            infoCategory: 'function',
-            type: node.type,
-            name: parent.firstChild?.text || '',
-            signatures: node.children
-              .filter((child) => child.type === 'parameter')
-              .map((param) => param.firstChild?.text || ''),
-            range: toMonacoRange(parent.parent),
-          };
-        }
-        return null;
-      }
-      case 'method_definition':
-        return {
-          infoCategory: 'function',
-          type: node.type,
-          name: node.firstNamedChild?.text || '',
-          signatures: node.children
-            .filter((child) => child.type === 'parameter')
-            .map((param) => param.firstChild?.text || ''),
-          range: toMonacoRange(node),
-        };
-    }
-
-    return null;
+    return provideFunctionInfo(node);
   }
 }
