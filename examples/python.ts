@@ -294,7 +294,7 @@ async function main() {
   );
   const parser = await service.createParser('python')!;
   const textModel = createTestTextModel(code.toString(), 'python');
-  const info = await parser.provideAllFunctionCodeBlockInfo(textModel);
+  const info = await parser.provideAllFunctionAndClassInfo(textModel);
   console.log(`🚀 ~ main ~ info:`, info);
 }
 

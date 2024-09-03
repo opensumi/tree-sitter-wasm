@@ -6,6 +6,7 @@ import Parser from 'web-tree-sitter';
 import {
   AbstractLanguageFacts,
   AbstractLanguageFactsDerived,
+  IClassBlockInfo,
   IFunctionBlockInfo,
 } from './base';
 import { GolangLanguageFacts } from './golang';
@@ -84,6 +85,17 @@ export class TreeSitterLanguageFacts {
     return null;
   }
 
+  provideClassInfo(
+    language: SupportedTreeSitterLanguages,
+    node: Parser.SyntaxNode,
+  ): IClassBlockInfo | null {
+    const languageFacts = this.langs.get(language);
+    if (languageFacts && languageFacts.provideClassInfo) {
+      return languageFacts.provideClassInfo(node);
+    }
+    return null;
+  }
+
   getCodeBlockTypes(language: SupportedTreeSitterLanguages): Set<string> {
     const languageFacts = this.langs.get(language);
     if (languageFacts) {
@@ -98,6 +110,14 @@ export class TreeSitterLanguageFacts {
     const languageFacts = this.langs.get(language);
     if (languageFacts && languageFacts.provideFunctionCodeBlocks) {
       return languageFacts.provideFunctionCodeBlocks();
+    }
+    return emptySet;
+  }
+
+  getClassCodeBlockTypes(language: SupportedTreeSitterLanguages): Set<string> {
+    const languageFacts = this.langs.get(language);
+    if (languageFacts && languageFacts.provideClassCodeBlocks) {
+      return languageFacts.provideClassCodeBlocks();
     }
     return emptySet;
   }

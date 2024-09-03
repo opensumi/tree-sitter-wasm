@@ -1,14 +1,19 @@
 import Parser from 'web-tree-sitter';
-
-import { toMonacoRange } from './common';
 import {
   SupportedTreeSitterLanguages,
   TreeSitterLanguageFacts,
 } from './language-facts';
-import { ICodeBlockInfo, IOtherBlockInfo } from './language-facts/base';
+import { toMonacoRange } from './utils/range';
+import {
+  IClassBlockInfo,
+  ICodeBlockInfo,
+  IFunctionBlockInfo,
+  IOtherBlockInfo,
+} from './language-facts/base';
 import { WasmModuleLoader } from './wasm-loader';
 import { LRUCache, PromiseWithResolvers } from './utils';
 import { IDisposable, IRange, ITextModel } from './types';
+import { concatSet } from './utils/set';
 
 export const DEFAULT_MIN_BLOCK_COUNT = 20;
 
@@ -185,10 +190,7 @@ export class LanguageParser implements IDisposable {
     return null;
   }
 
-  protected async provideAllCodeBlockInfoBy(
-    model: ITextModel,
-    infoSet: Set<string>,
-  ) {
+  async provideAllCodeBlockInfoBy(model: ITextModel, infoSet: Set<string>) {
     const rootNode = await this.parseAST(model);
     if (!rootNode) {
       return [];
@@ -208,31 +210,48 @@ export class LanguageParser implements IDisposable {
       return [];
     }
     const nodes = await this.provideAllCodeBlockInfoBy(model, types);
-    return nodes.map((node) => {
-      const category = this.languageFacts.isFunctionCodeBlock(
-        this.language,
-        node.type,
-      )
-        ? 'function'
-        : 'other';
-      return {
-        infoCategory: category,
-        range: toMonacoRange(node),
-        type: node.type,
-      };
-    });
+    return nodes
+      .map((node) => {
+        if (this.languageFacts.isFunctionCodeBlock(this.language, node.type)) {
+          return this.languageFacts.provideFunctionInfo(this.language, node);
+        }
+        return {
+          infoCategory: 'other',
+          range: toMonacoRange(node),
+          type: node.type,
+        };
+      })
+      .filter(Boolean);
   }
 
-  async provideAllFunctionCodeBlockInfo(model: ITextModel) {
-    const types = this.languageFacts.getFunctionCodeBlockTypes(this.language);
-    if (!types || types.size === 0) {
+  async provideAllFunctionAndClassInfo(
+    model: ITextModel,
+  ): Promise<(IFunctionBlockInfo | IClassBlockInfo)[]> {
+    const set = new Set<string>();
+    const functionSet = this.languageFacts.getFunctionCodeBlockTypes(
+      this.language,
+    );
+    const classSet = this.languageFacts.getClassCodeBlockTypes(this.language);
+    concatSet(set, functionSet);
+    concatSet(set, classSet);
+    if (!set || set.size === 0) {
       return [];
     }
-    const nodes = await this.provideAllCodeBlockInfoBy(model, types);
+
+    const nodes = await this.provideAllCodeBlockInfoBy(model, set);
 
     return nodes
       .map((node) => {
-        return this.languageFacts.provideFunctionInfo(this.language, node);
+        if (functionSet.has(node.type)) {
+          return this.languageFacts.provideFunctionInfo(
+            this.language,
+            node,
+          ) as IFunctionBlockInfo;
+        }
+        return this.languageFacts.provideClassInfo(
+          this.language,
+          node,
+        ) as IClassBlockInfo;
       })
       .filter(Boolean);
   }

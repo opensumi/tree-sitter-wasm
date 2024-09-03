@@ -16,6 +16,11 @@ export interface IFunctionBlockInfo extends IBaseCodeBlockInfo {
   signatures: string[];
 }
 
+export interface IClassBlockInfo extends IBaseCodeBlockInfo {
+  infoCategory: 'class';
+  name: string;
+}
+
 export interface IOtherBlockInfo extends IBaseCodeBlockInfo {
   infoCategory: 'other';
 }
@@ -26,7 +31,10 @@ interface IBlockCommentStyle {
   linePrefix: string;
 }
 
-export type ICodeBlockInfo = IFunctionBlockInfo | IOtherBlockInfo;
+export type ICodeBlockInfo =
+  | IFunctionBlockInfo
+  | IClassBlockInfo
+  | IOtherBlockInfo;
 
 export abstract class AbstractLanguageFacts {
   abstract name: SupportedTreeSitterLanguages;
@@ -37,8 +45,10 @@ export abstract class AbstractLanguageFacts {
   abstract provideFunctionInfo?(
     node: Parser.SyntaxNode,
   ): IFunctionBlockInfo | null;
+  abstract provideClassInfo?(node: Parser.SyntaxNode): IClassBlockInfo | null;
   abstract provideCodeBlocks(): Set<string>;
   abstract provideFunctionCodeBlocks?(): Set<string>;
+  abstract provideClassCodeBlocks?(): Set<string>;
 }
 
 export type AbstractLanguageFactsDerived = (new () => AbstractLanguageFacts) &

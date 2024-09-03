@@ -1,6 +1,10 @@
 import { SyntaxNode } from 'web-tree-sitter';
-import { AbstractLanguageFacts, IFunctionBlockInfo } from './base';
-import { toMonacoRange } from '../common';
+import {
+  AbstractLanguageFacts,
+  IClassBlockInfo,
+  IFunctionBlockInfo,
+} from './base';
+import { toMonacoRange } from '../utils/range';
 
 /**
  * python 中表示代码块的节点类型
@@ -19,6 +23,9 @@ export const pythonBlockCodeTypes = [
   'with_statement',
   'decorated_definition',
 ];
+
+export const classBlockCodeTypes = ['class_definition'];
+const classBlockCodeTypesSet = new Set(classBlockCodeTypes);
 
 const blockSet = new Set(pythonBlockCodeTypes);
 
@@ -59,6 +66,26 @@ export class PythonLanguageFacts implements AbstractLanguageFacts {
           range: toMonacoRange(node),
           name,
           signatures,
+        };
+      }
+      default:
+        return null;
+    }
+  }
+
+  provideClassCodeBlocks(): Set<string> {
+    return classBlockCodeTypesSet;
+  }
+
+  provideClassInfo(node: SyntaxNode): IClassBlockInfo | null {
+    switch (node.type) {
+      case 'class_definition': {
+        const name = node.childForFieldName('name')?.text || '';
+        return {
+          infoCategory: 'class',
+          type: node.type,
+          range: toMonacoRange(node),
+          name,
         };
       }
       default:

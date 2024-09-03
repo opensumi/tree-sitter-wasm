@@ -137,6 +137,22 @@ export function createApp({ appConfig, runtimeConfig }: IConfig): IAppInstance {
   return app;
 }
 
+class AppOpts {
+  workspaceDir?: string;
+  homeDir?: string;
+  preferenceDirName?: string;
+  storageDirName?: string;
+  extensionStorageDirName?: string;
+  appName?: string;
+  allowSetDocumentTitleFollowWorkspaceDir?: boolean;
+  app?: {
+    logo?: string;
+    brandName?: string;
+    productName?: string;
+    icon?: string;
+  };
+}
+
 `;
 
 async function main() {
@@ -147,7 +163,7 @@ async function main() {
   );
   const parser = await service.createParser('typescriptreact')!;
   const textModel = createTestTextModel(code.toString(), 'typescriptreact');
-  const info = await parser.provideAllFunctionCodeBlockInfo(textModel);
+  const info = await parser.provideAllFunctionAndClassInfo(textModel);
   console.log(`🚀 ~ main ~ info:`, info);
 }
 

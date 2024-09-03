@@ -7,6 +7,8 @@ import {
 import { WasmModuleLoader } from './wasm-loader';
 import { IDisposable } from './types';
 
+export * from './utils/range';
+
 export class LanguageParserService implements IDisposable {
   private pool = new Map<SupportedTreeSitterLanguages, LanguageParser>();
   wasmLoader: WasmModuleLoader;
