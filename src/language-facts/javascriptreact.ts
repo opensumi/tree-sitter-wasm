@@ -1,8 +1,14 @@
 import { SyntaxNode } from 'web-tree-sitter';
-import { AbstractLanguageFacts, IFunctionBlockInfo } from './base';
 import {
+  AbstractLanguageFacts,
+  IClassBlockInfo,
+  IFunctionBlockInfo,
+} from './base';
+import {
+  classBlockSet,
   functionBlockSet,
   javascriptBlockCodeTypes,
+  provideClassInfo,
   provideFunctionInfo,
 } from './javascript';
 
@@ -39,5 +45,13 @@ export class JavaScriptReactLanguageFacts implements AbstractLanguageFacts {
 
   provideFunctionInfo(node: SyntaxNode): IFunctionBlockInfo | null {
     return provideFunctionInfo(node);
+  }
+
+  provideClassCodeBlocks(): Set<string> {
+    return classBlockSet;
+  }
+
+  provideClassInfo(node: SyntaxNode): IClassBlockInfo | null {
+    return provideClassInfo(node);
   }
 }

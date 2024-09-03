@@ -1,11 +1,15 @@
-import { toMonacoRange } from '../common';
+import { toMonacoRange } from '../utils/range';
 
-import { AbstractLanguageFacts, IFunctionBlockInfo } from './base';
+import {
+  AbstractLanguageFacts,
+  IClassBlockInfo,
+  IFunctionBlockInfo,
+} from './base';
 
 import type { SyntaxNode } from 'web-tree-sitter';
 
 /**
- * javascript 中表示代码块的节点类型
+ * javascript 中表示代码块的节点类型query22
  */
 export const javascriptBlockCodeTypes = [
   'function',
@@ -35,7 +39,13 @@ export const functionBlockCodeTypes = [
   'method_definition',
 ];
 
+export const classBlockCodeTypes = [
+  'class_declaration',
+  'interface_declaration',
+];
+
 export const functionBlockSet = new Set(functionBlockCodeTypes);
+export const classBlockSet = new Set(classBlockCodeTypes);
 const blockSet = new Set(javascriptBlockCodeTypes);
 
 export function provideFunctionInfo(
@@ -95,6 +105,22 @@ export function provideFunctionInfo(
   return null;
 }
 
+export function provideClassInfo(node: SyntaxNode): IClassBlockInfo | null {
+  switch (node.type) {
+    case 'class_declaration':
+    case 'interface_declaration': {
+      const name = node.childForFieldName('name')?.text || '';
+      return {
+        infoCategory: 'class',
+        type: node.type,
+        name,
+        range: toMonacoRange(node),
+      };
+    }
+  }
+  return null;
+}
+
 export class JavaScriptLanguageFacts implements AbstractLanguageFacts {
   name = 'javascript' as const;
   listCommentStyle = '// ';
@@ -112,5 +138,13 @@ export class JavaScriptLanguageFacts implements AbstractLanguageFacts {
   }
   provideFunctionInfo(node: SyntaxNode): IFunctionBlockInfo | null {
     return provideFunctionInfo(node);
+  }
+
+  provideClassCodeBlocks(): Set<string> {
+    return classBlockSet;
+  }
+
+  provideClassInfo(node: SyntaxNode): IClassBlockInfo | null {
+    return provideClassInfo(node);
   }
 }
